@@ -1,0 +1,261 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: The username of the user
+        password:
+          type: string
+          description: The password of the user
+        fullname:
+          type: string
+          description: The full name of the user
+        email:
+          type: string
+          format: email
+          description: The email of the user
+        phone:
+          type: string
+          description: The phone number of the user
+        vip:
+          type: integer
+          enum: [0, 1]
+          default: 0
+          description: The vip status of the user
+    
+    Workout:
+      type: object
+      properties:
+        workout_id:
+          type: integer
+          readOnly: true
+        workout_name:
+          type: string
+          description:  Name of the workout
+        difficulty:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5]
+          description:  Difficulty of the workout
+        workout_type:
+          type: string
+          enum: ["Cardio", "Strength", "Flexibility", "Balance"]
+          description:  Type of the workout
+        equipment:
+          type: string
+          enum: [Dumbbells, Resistance Bands, Treadmill, none]
+          default: none
+          description:  Equipment required for the workout
+        burn_estimate:
+          type: integer
+          description:  Estimated calories burned
+        workout_vip:
+          type: integer
+          enum: [0, 1]
+          default: 0
+          description:  VIP status of the workout
+        tutorial_video:
+          type: string
+          readOnly: true # Returned by HTTP GET 
+          description: tutorial video file path ( HTTP GET )
+        tutorial_video_file:
+          type: string 
+          format: binary
+          writeOnly: true # Used in POST/PUT/PATCH 
+          description: tutorial video file (Used in POST/PUT/PATCH)
+    
+    Meal:
+      type: object
+      properties:
+        meal_id: 
+          type: integer
+          readOnly: true
+        meal_name:
+          type:  string
+          description: name of the meal
+        meal_type:
+          type: string
+          enum: [Breakfast, Lunch, Dinner, Snack]
+          description: type of the meal
+        recipe:
+          type: string
+          description: recipe of the meal
+        calories:
+          type: integer
+          description: calories of the meal
+        making:
+          type: string
+          description: how to cook food
+        meal_description:
+          type: string
+          description: description of the meal
+    
+    Blog:
+      type: object
+      properties:
+        blog_id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: title of the blog
+        blog_description:
+          type: string
+          description: description of the blog
+        content:
+          type: string
+          description: content of the blog
+        author:
+          type: string
+          description: author of the blog
+        blog_image:
+          type: string
+          readOnly: true # Returned by HTTP GET 
+          description: contact avatar file path ( HTTP GET )
+        blog_image_file:
+          type: string 
+          format: binary
+          writeOnly: true # Used in POST/PUT/PATCH 
+          description: contact avatar file (Used in POST/PUT/PATCH)
+    
+    PaginationMetadata:
+      type: object
+      properties:
+        totalRecords:
+          type: integer
+          default: 0
+          description: The total number of records
+        firstPage:
+          type: integer
+          default: 1
+          description: The first Page
+        lastPage:
+          type: integer
+          default: 1
+          description: The last Page
+        page:
+          type: integer
+          default: 1
+          description: The current Page
+        limit:
+          type: integer
+          default: 5
+          description: The number of records per page
+  
+  responses:
+    '200NoData':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: The response status
+                enum:
+                  -success
+              data:
+                type: object
+                nullable: true
+                default: null
+                description: the response data
+    '400BadRequest':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: The response status
+                enum: [error]
+              message:
+                type: string
+                description: Error message
+    '404NotFound':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: The response status
+                enum: [error]
+              message:
+                type: string
+                description: Error message
+    '500ServerError':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: The response status
+                enum: [error]
+              message:
+                type: string
+                description: Error message
+
+  parameters:
+    userIdParam:
+      name: user_id
+      description: id of the user
+      required: true
+      in: path
+      schema:
+        type: integer
+
+    workoutIdParam:
+      name: workout_id
+      description: id of the workout
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    mealIdParam:
+      name: meal_id
+      description: id of the meal
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    blogIdParam:
+      name: blog_id
+      description: id of the blog
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    limitParam:
+      name: limit
+      description: Number of records per page
+      in: query
+      schema:
+        type: integer
+        default: 6
+        minimum: 1
+        maximum: 100
+      required: false
+    
+    pageParam:
+      name: page
+      description: Page number of records
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      required: false
